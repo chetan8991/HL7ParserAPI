@@ -1,0 +1,6 @@
+@HL7ParserAPI_HostAddress = http://localhost:5030
+
+GET {{HL7ParserAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
