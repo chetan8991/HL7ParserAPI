@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Connections;
+﻿using Google.Cloud.SecretManager.V1;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
@@ -10,62 +12,83 @@ namespace HL7ParserAPI.Services
 {
     public class RabbitMQService
     {
-        private readonly string _hostname;
-        private readonly int _port;
-        private readonly string _username;
-        private readonly string _password;
-        private readonly string _queueName;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<RabbitMQService> _logger;
+        private readonly string _projectId = "spartan-acrobat-452620-t6";
+        private const string SecretName = "rabbitmq-config"; // name of your secret
 
-        public RabbitMQService(IConfiguration configuration)
+        private class RabbitMQCredentials
         {
-            var rabbitConfig = configuration.GetSection("RabbitMQ");
-            _hostname = rabbitConfig["Host"];
-            _port = int.Parse(rabbitConfig["Port"]);
-            _username = rabbitConfig["Username"];
-            _password = rabbitConfig["Password"];
-            _queueName = rabbitConfig["QueueName"];
+            public string Host { get; set; }
+            public int Port { get; set; }
+            public string Username { get; set; }
+            public string Password { get; set; }
+            public string QueueName { get; set; }
         }
 
-        public void PublishMessage(Guid id, string jsonMessage)
+        private RabbitMQCredentials _credentials;
+
+        public RabbitMQService(IConfiguration configuration, ILogger<RabbitMQService> logger)
         {
-            var factory = new ConnectionFactory()
+            _configuration = configuration;
+            _logger = logger;
+            LoadSecrets();
+        }
+
+        private void LoadSecrets()
+        {
+            try
             {
-                HostName = _hostname,
-                Port = _port,
-                UserName = _username,
-                Password = _password
-            };
+                SecretManagerServiceClient client = SecretManagerServiceClient.Create();
+                var secretVersionName = new SecretVersionName(_projectId, SecretName, "latest");
 
-            // Establish connection
-            using var connection = factory.CreateConnection(); // <- This should work now
-            using var channel = connection.CreateModel();
+                var result = client.AccessSecretVersion(secretVersionName);
+                string payload = result.Payload.Data.ToStringUtf8();
 
-            channel.QueueDeclare(queue: _queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
-            //var consumer = new EventingBasicConsumer(channel);
-
-            //consumer.Received += (model, ea) =>
-            //{
-            //    var body = ea.Body.ToArray();
-            //    var message = Encoding.UTF8.GetString(body);
-            //    Console.WriteLine($"Received: {message}");
-            //};
-
-            //channel.BasicConsume(queue: "test_queue", autoAck: true, consumer: consumer);
-
-            //Console.WriteLine("Waiting for messages...");
-            //Console.ReadLine();
-
-
-            var body = Encoding.UTF8.GetBytes(jsonMessage);
-
-            var properties = channel.CreateBasicProperties();
-            properties.Persistent = true;
-            properties.Headers = new Dictionary<string, object>
+                _credentials = JsonConvert.DeserializeObject<RabbitMQCredentials>(payload);
+                _logger.LogInformation("RabbitMQ credentials loaded from Secret Manager.");
+            }
+            catch (Exception ex)
             {
-                { "UniqueId", id.ToString() }
-            };
+                _logger.LogError(ex, "Failed to load RabbitMQ credentials from Secret Manager.");
+                throw;
+            }
+        }
 
-            channel.BasicPublish(exchange: "", routingKey: _queueName, basicProperties: properties, body: body);
+        public void PublishMessage(Guid recordId, string message)
+        {
+            try
+            {
+                var factory = new ConnectionFactory()
+                {
+                    HostName = _credentials.Host,
+                    Port = _credentials.Port,
+                    UserName = _credentials.Username,
+                    Password = _credentials.Password
+                };
+
+                using var connection = factory.CreateConnection();
+                using var channel = connection.CreateModel();
+
+                channel.QueueDeclare(queue: _credentials.QueueName,
+                                     durable: false,
+                                     exclusive: false,
+                                     autoDelete: false,
+                                     arguments: null);
+
+                var body = Encoding.UTF8.GetBytes(message);
+
+                channel.BasicPublish(exchange: "",
+                                     routingKey: _credentials.QueueName,
+                                     basicProperties: null,
+                                     body: body);
+
+                _logger.LogInformation($"Message published to RabbitMQ. Record ID: {recordId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to publish message to RabbitMQ for Record ID: {recordId}");
+            }
         }
     }
 }
