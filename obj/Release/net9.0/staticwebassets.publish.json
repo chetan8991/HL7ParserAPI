@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "IODzFwh7pOQgld3dpjrIzIJYGRXjHVbSRX6ZmmiZhdk=",
+  "Source": "HL7ParserAPI",
+  "BasePath": "_content/HL7ParserAPI",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "ContainingType": "HL7ParserAPI.Controllers.HL7Controller",
+    "Method": "ParseHL7",
+    "RelativePath": "api/HL7Controller/parse",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

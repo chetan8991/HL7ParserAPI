@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\HL7ParserAPI.props" />
+</Project>

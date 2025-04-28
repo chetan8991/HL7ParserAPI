@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>HL7ParserAPI</id>
+    <version>1.0.0</version>
+    <authors>HL7ParserAPI</authors>
+    <description>Package Description</description>
+    <repository type="git" commit="97329645732d4fed72bf3ed39c9674f81d33eb05" />
+    <dependencies>
+      <group targetFramework="net9.0">
+        <dependency id="Dapper" version="2.1.66" exclude="Build,Analyzers" />
+        <dependency id="Docker.DotNet" version="3.125.15" exclude="Build,Analyzers" />
+        <dependency id="Google.Cloud.SecretManager.V1" version="2.5.0" exclude="Build,Analyzers" />
+        <dependency id="HL7-V2" version="3.4.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.OpenApi" version="9.0.2" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.EntityFrameworkCore.SqlServer" version="9.0.2" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" version="1.21.0" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+        <dependency id="RabbitMQ.Client" version="6.5.0" exclude="Build,Analyzers" />
+        <dependency id="Serilog.AspNetCore" version="9.0.0" exclude="Build,Analyzers" />
+        <dependency id="Serilog.Enrichers.Environment" version="3.0.1" exclude="Build,Analyzers" />
+        <dependency id="Serilog.Enrichers.Process" version="3.0.0" exclude="Build,Analyzers" />
+        <dependency id="Serilog.Enrichers.Thread" version="4.0.0" exclude="Build,Analyzers" />
+        <dependency id="Serilog.Sinks.Console" version="6.0.0" exclude="Build,Analyzers" />
+        <dependency id="Serilog.Sinks.File" version="6.0.0" exclude="Build,Analyzers" />
+        <dependency id="Swashbuckle.AspNetCore" version="7.3.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkReferences>
+      <group targetFramework="net9.0">
+        <frameworkReference name="Microsoft.AspNetCore.App" />
+      </group>
+    </frameworkReferences>
+    <contentFiles>
+      <files include="any/net9.0/appsettings.Development.json" buildAction="Content" />
+      <files include="any/net9.0/appsettings.json" buildAction="Content" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src="C:\HL7ParserAPI\bin\Release\net9.0\HL7ParserAPI.runtimeconfig.json" target="lib\net9.0\HL7ParserAPI.runtimeconfig.json" />
+    <file src="C:\HL7ParserAPI\bin\Release\net9.0\HL7ParserAPI.dll" target="lib\net9.0\HL7ParserAPI.dll" />
+    <file src="C:\HL7ParserAPI\appsettings.Development.json" target="content\appsettings.Development.json" />
+    <file src="C:\HL7ParserAPI\appsettings.Development.json" target="contentFiles\any\net9.0\appsettings.Development.json" />
+    <file src="C:\HL7ParserAPI\appsettings.json" target="content\appsettings.json" />
+    <file src="C:\HL7ParserAPI\appsettings.json" target="contentFiles\any\net9.0\appsettings.json" />
+  </files>
+</package>

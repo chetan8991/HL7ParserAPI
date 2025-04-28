@@ -1,0 +1,22 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "HL7 API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/HL7Controller/parse": {
+      "post": {
+        "tags": [
+          "HL7"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": { }
+}
